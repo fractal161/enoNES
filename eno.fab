@@ -2,12 +2,12 @@ struct RepNote
     U duty
     UU pitch
     U vol_size
-    UUU vol_ptr
-    UUU vol_len_ptr
+    CC/eno_vols vol_ptr
+    CC/eno_vols vol_len_ptr
     U vol_index
     U vol_counter
 
-data /voice_orders
+omni data /voice_orders
     [] voice_order
         U(1)
         U(3)
@@ -29,23 +29,15 @@ data /voice_orders
         U(2)
 
 vars /eno_voices
-    RepNote[] voices = RepNote[](
-        RepNote(
-            U(1),
-            UU($10C), // high Ab
-            U(len(sq1_1_vol)),
-            UUU(@sq1_1_vol),
-            UUU(@sq1_1_len),
-            U(0),
-            U(0)
-        ),
-    )
+    RepNote[7] voices
+
 
 fn update_eno()
+: employs /eno_voices/eno_vols
     // increment all counters
     for U i = 0; i < len(voices); i += 1
-        CCC/eno_vols vol_ptr = CCC/eno_vols(voices[i].vol_ptr)
-        CCC/eno_vols vol_len_ptr = CCC/eno_vols(voices[i].vol_len_ptr)
+        CC/eno_vols vol_ptr = CC/eno_vols(voices[i].vol_ptr)
+        CC/eno_vols vol_len_ptr = CC/eno_vols(voices[i].vol_len_ptr)
         voices[i].vol_counter += 1
         U vol_len = vol_len_ptr[voices[i].vol_index]
         if vol_len == voices[i].vol_counter
@@ -58,7 +50,8 @@ fn update_eno()
     update_sq1(0)
 
 fn update_sq1(U i)
-    CCC/eno_vols vol_ptr = CCC/eno_vols(voices[i].vol_ptr)
+: employs /eno_voices/sound
+    CC/eno_vols vol_ptr = CC/eno_vols(voices[i].vol_ptr)
 
     // check if duration has been fulfilled
     sq1_duty = voices[i].duty

@@ -12,7 +12,40 @@ U TITLE_LEN = len(titles) >> 5
 
 No way to put a pointer in a struct???? Have to cast to UUU
 
-Tons of problems with an array of structs in vars
+Tons of problems with an array of structs in vars (this is actually a compiler bug lmao will probably be fixed)
+
+Another bug with casting points to int types, and some weird thing where I *needed* to make eno_vols omni data in order to get everything working, but I'm too scared to try and figure that one out lmao
+
+With following code:
+```
+vars /globals
+    UU test = $9876
+    UU[] tests = UU[]($010C, $0218, $0567)
+
+nmi main_nmi()
+    ppu_upload_oam_poll_pads(0)
+    write_uu($1234, $21EE)
+    write_uu(tests[0], $220E)
+    write_uu(tests[1], $222E)
+    write_uu(tests[2], $224E)
+    write_uu(test, $226E)
+    ppu_reset_scroll(0, 0)
+
+mode main()
+: nmi main_nmi
+: employs /globals
+    palette = example_palette
+    ppu_upload_palette()
+
+    load_bg()
+
+    {PPUCTRL}(PPUCTRL_NMI_ON)
+    {PPUMASK}(PPUMASK_ON | PPUMASK_NO_CLIP)
+    while true
+        nmi
+```
+
+the `employs` is necessary to tell the compiler that the nmi code needs the globals. Putting it just with the nmi handler itself doesn't work
 
  SUGGESTIONS (mostly for docs)
  - .a and .b appear to be undocumented

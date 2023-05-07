@@ -1,4 +1,78 @@
-data /eno_vols
+fn init_eno_voices()
+: employs /eno_vols
+    // test_ptr = @sq1_1_vol
+    // test_ptr_cast = UUU(@sq1_1_vol)
+    voices[0] = RepNote(
+        U(1),
+        UU($010C),
+        U(len(sq1_1_vol)),
+        @sq1_1_vol,
+        @sq1_1_len,
+        U(0),
+        U(0)
+    )
+
+    voices[1] = RepNote(
+        U(1),
+        UU($010C),
+        U(len(sq1_1_vol)),
+        @sq1_1_vol,
+        @sq1_1_len,
+        U(0),
+        U(0)
+    )
+
+    voices[2] = RepNote(
+        U(1),
+        UU($010C),
+        U(len(sq1_1_vol)),
+        @sq1_1_vol,
+        @sq1_1_len,
+        U(0),
+        U(0)
+    )
+
+    voices[3] = RepNote(
+        U(1),
+        UU($010C),
+        U(len(sq1_1_vol)),
+        @sq1_1_vol,
+        @sq1_1_len,
+        U(0),
+        U(0)
+    )
+
+    voices[4] = RepNote(
+        U(1),
+        UU($010C),
+        U(len(sq1_1_vol)),
+        @sq1_1_vol,
+        @sq1_1_len,
+        U(0),
+        U(0)
+    )
+
+    voices[5] = RepNote(
+        U(1),
+        UU($010C),
+        U(len(sq1_1_vol)),
+        @sq1_1_vol,
+        @sq1_1_len,
+        U(0),
+        U(0)
+    )
+
+    voices[6] = RepNote(
+        U(1),
+        UU($010C),
+        U(len(sq1_1_vol)),
+        @sq1_1_vol,
+        @sq1_1_len,
+        U(0),
+        U(0)
+    )
+
+omni data /eno_vols
     [] sq1_1_vol
         U(8)
         U(9)
