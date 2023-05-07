@@ -7,8 +7,29 @@ struct RepNote
     U vol_index
     U vol_counter
 
+data /voice_orders
+    [] voice_order
+        U(1)
+        U(3)
+        U(2)
+        U(1)
+        U(2)
+        U(3)
+        U(2)
+        U(1)
+        U(3)
+        U(2)
+        U(3)
+        U(1)
+        U(3)
+        U(2)
+        U(1)
+        U(3)
+        U(1)
+        U(2)
+
 vars /eno_voices
-    RepNote[] sq1_voices = RepNote[](
+    RepNote[] voices = RepNote[](
         RepNote(
             U(1),
             UU($10C), // high Ab
@@ -17,24 +38,32 @@ vars /eno_voices
             UUU(@sq1_1_len),
             U(0),
             U(0)
-        )
+        ),
     )
 
 fn update_eno()
-    sq1_voices[0].vol_counter += 1
+    // increment all counters
+    for U i = 0; i < len(voices); i += 1
+        CCC/eno_vols vol_ptr = CCC/eno_vols(voices[i].vol_ptr)
+        CCC/eno_vols vol_len_ptr = CCC/eno_vols(voices[i].vol_len_ptr)
+        voices[i].vol_counter += 1
+        U vol_len = vol_len_ptr[voices[i].vol_index]
+        if vol_len == voices[i].vol_counter
+            voices[i].vol_counter = 0
+            voices[i].vol_index += 1
+            // check if we loop the envelope
+            if voices[i].vol_index == voices[i].vol_size
+                voices[i].vol_index = 0
+    // TODO: use global counter to get order to update each thing
+    update_sq1(0)
 
-    // handle sq1
-    CCC/eno_vols vol_ptr = CCC/eno_vols(sq1_voices[0].vol_ptr)
-    CCC/eno_vols vol_len_ptr = CCC/eno_vols(sq1_voices[0].vol_len_ptr)
-    U vol_len = vol_len_ptr[sq1_voices[0].vol_index]
+fn update_sq1(U i)
+    CCC/eno_vols vol_ptr = CCC/eno_vols(voices[i].vol_ptr)
 
     // check if duration has been fulfilled
-    if vol_len == sq1_voices[0].vol_counter
-        sq1_voices[0].vol_counter = 0
-        sq1_voices[0].vol_index += 1
-        // check if we loop the envelope
-        if sq1_voices[0].vol_index == sq1_voices[0].vol_size
-            sq1_voices[0].vol_index = 0
-    sq1_duty = sq1_voices[0].duty
-    sq1_vol = vol_ptr[sq1_voices[0].vol_index]
+    sq1_duty = voices[i].duty
+    if sq1_vol == 0 && vol_ptr[voices[i].vol_index] > 0
+        sq1_pitch = voices[i].pitch
+        set_sq1_pitch()
+    sq1_vol = vol_ptr[voices[i].vol_index]
     set_sq1_timbre()

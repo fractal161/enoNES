@@ -2,10 +2,10 @@ vars /sound
     UU tri_pitch = 0
     UU sq1_pitch = 0
     U sq1_duty = 0
-    U sq1_vol = $F
+    U sq1_vol = $0
     UU sq2_pitch = 0
     U sq2_duty = 0
-    U sq2_vol = $F
+    U sq2_vol = $0
 
 fn reset_audio()
 

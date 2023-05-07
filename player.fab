@@ -100,8 +100,6 @@ mode main()
     {SND_CHN}(%111) // enable sq1/sq2/tri
     {SQ1_SWEEP}(0) // disable sweep
     {SQ2_SWEEP}(0) // disable sweep
-    sq1_pitch = $10C
-    set_sq1_pitch()
     while true
         update_pads()
         handle_input()
