@@ -9,3 +9,9 @@ MISTAKES
 
 U TITLE_LEN = len(titles) >> 5
  - how to declare this as an int?
+
+No way to put a pointer in a struct???? Have to cast to UUU
+
+ SUGGESTIONS (mostly for docs)
+ - .a and .b appear to be undocumented
+ - would be nice to explicitly say how PAAs should be inited

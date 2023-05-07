@@ -77,19 +77,13 @@ fn handle_input()
         else
             title_num += 1
 
-    // handle vol change (TEST)
-    if pads[0].pressed & BUTTON_UP
-        sq1_vol += 1
-    if pads[0].pressed & BUTTON_DOWN
-        sq1_vol -= 1
-
 fn draw_shapes()
     ppu_reset_addr($2000)
 
 nmi main_nmi()
     ppu_upload_oam_poll_pads(0)
     draw_title()
-    write_u(sq1_vol)
+    write_u(sq1_vol, $21CE)
     ppu_reset_scroll(0, 0)
     global_counter += 1
 
@@ -107,12 +101,11 @@ mode main()
     {SQ1_SWEEP}(0) // disable sweep
     {SQ2_SWEEP}(0) // disable sweep
     sq1_pitch = $10C
-    sq1_duty = 2
     set_sq1_pitch()
     while true
         update_pads()
         handle_input()
-        set_sq1_timbre()
+        update_eno()
         nmi
 
 // Define the tileset (commonly called CHR):

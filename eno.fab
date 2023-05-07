@@ -1,18 +1,69 @@
+vars /eno_voices
+    RepNote eno_voice1 = RepNote(
+        U(2),
+        UU($10C),
+        U(15),
+        UUU(@sq1_1_vol),
+        UUU(@sq1_1_len),
+        U(0),
+        U(0)
+    )
+
 struct RepNote
     U duty
     UU pitch
-    UU total_len
-    UU counter
     U vol_size
-    CC vol_ptr
-    CC vol_len_ptr
+    UUU vol_ptr
+    UUU vol_len_ptr
+    U vol_index
+    U vol_counter
 
-// data /eno_voices
-// 
-//     [] sq1_voices
-//         RepNote(
-//             U(0),
-//             UU($086),
-//             UU(1086)
-//             U
-//         )
+data /eno_vols
+    [] sq1_1_vol
+        U(0)
+        U(1)
+        U(2)
+        U(3)
+        U(4)
+        U(5)
+        U(6)
+        U(7)
+        U(8)
+        U(9)
+        U(10)
+        U(11)
+        U(12)
+        U(13)
+        U(14)
+        U(15)
+    [] sq1_1_len
+        U(20)
+        U(20)
+        U(20)
+        U(20)
+        U(20)
+        U(20)
+        U(20)
+        U(20)
+        U(20)
+        U(20)
+        U(20)
+        U(20)
+        U(20)
+        U(20)
+        U(20)
+
+fn update_eno()
+    eno_voice1.vol_counter += 1
+    CCC/eno_vols vol_ptr = CCC/eno_vols(eno_voice1.vol_ptr)
+    CCC/eno_vols vol_len_ptr = CCC/eno_vols(eno_voice1.vol_len_ptr)
+    U vol_len = vol_len_ptr[eno_voice1.vol_index]
+    // check if duration has been fulfilled
+    if vol_len == eno_voice1.vol_counter
+        eno_voice1.vol_counter = 0
+        eno_voice1.vol_index += 1
+        if eno_voice1.vol_index == eno_voice1.vol_size
+            eno_voice1.vol_index = 0
+    sq1_duty = eno_voice1.duty
+    sq1_vol = vol_ptr[eno_voice1.vol_index]
+    set_sq1_timbre()
