@@ -1,0 +1,11 @@
+MILESTONES
+ - basically copy/paste bits from example program and change random things
+ - test program to increase/decrease the volume of an sq1
+
+MISTAKES
+
+{PPUDATA}(@titles[i+title_offset])
+ - originally used {} to access @titles, but i and title_offset are both U types
+
+U TITLE_LEN = len(titles) >> 5
+ - how to declare this as an int?

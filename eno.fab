@@ -1,0 +1,18 @@
+struct RepNote
+    U duty
+    UU pitch
+    UU total_len
+    UU counter
+    U vol_size
+    CC vol_ptr
+    CC vol_len_ptr
+
+// data /eno_voices
+// 
+//     [] sq1_voices
+//         RepNote(
+//             U(0),
+//             UU($086),
+//             UU(1086)
+//             U
+//         )

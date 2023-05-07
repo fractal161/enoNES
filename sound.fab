@@ -1,0 +1,33 @@
+vars /sound
+    UU tri_pitch = 0
+    UU sq1_pitch = 0
+    U sq1_duty = 0
+    U sq1_vol = $F
+    UU sq2_pitch = 0
+    U sq2_duty = 0
+    U sq2_vol = $F
+
+fn reset_audio()
+
+// we need to handle sq pitch separately because setting high resets
+// the duty cycle.
+
+fn set_sq1_timbre()
+    {SQ1_VOL}((sq1_duty << 6) | %110000 | (sq1_vol & $F))
+    
+fn set_sq1_pitch()
+    {SQ1_LO}(sq1_pitch.a)
+    {SQ1_HI}(sq1_pitch.b & %111)
+
+fn set_sq2_timbre()
+    {SQ2_VOL}((sq2_duty << 6) | %110000 | (sq2_vol & $F))
+    
+fn set_sq2_pitch()
+    {SQ2_LO}(sq2_pitch.a)
+    {SQ2_HI}(sq2_pitch.b & %111)
+
+// works like normal, plays note for exactly one frame
+fn play_tri()
+    {TRI_LINEAR}($04) // play for one frame
+    {TRI_LO}(tri_pitch.a)
+    {TRI_HI}(tri_pitch.b & %111)
