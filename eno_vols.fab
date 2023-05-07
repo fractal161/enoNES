@@ -125,13 +125,11 @@ omni data /eno_vols
         U(128)
 
     [] tri_vol // F2
-        ("0011100")
+        ("00123456789ABCDEFFEDCBA98765432100")
     [] tri_len
         U(200)
         U(214)
-        U(200)
-        U(200)
-        U(240)
+        ("KKKKKKKKKKKKKKKKKKKKKKKKKKKKKK")
         U(200)
         U(228)
 
