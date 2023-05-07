@@ -1,0 +1,4 @@
+fn write_u(U x)
+    ppu_reset_addr($21CE)
+    {PPUDATA}(x >> 4)
+    {PPUDATA}(x & %1111)
