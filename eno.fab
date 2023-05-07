@@ -48,6 +48,8 @@ fn update_eno()
                 voices[i].vol_index = 0
     // TODO: use global counter to get order to update each thing
     update_sq1(0)
+    update_sq2(2)
+    update_tri(6)
 
 fn update_sq1(U i)
 : employs /eno_voices/sound
@@ -60,3 +62,21 @@ fn update_sq1(U i)
         set_sq1_pitch()
     sq1_vol = vol_ptr[voices[i].vol_index]
     set_sq1_timbre()
+
+fn update_sq2(U i)
+: employs /eno_voices/sound
+    CC/eno_vols vol_ptr = CC/eno_vols(voices[i].vol_ptr)
+
+    // check if duration has been fulfilled
+    sq2_duty = voices[i].duty
+    if sq2_vol == 0 && vol_ptr[voices[i].vol_index] > 0
+        sq2_pitch = voices[i].pitch
+        set_sq2_pitch()
+    sq2_vol = vol_ptr[voices[i].vol_index]
+    set_sq2_timbre()
+
+fn update_tri(U i)
+    tri_pitch = voices[i].pitch
+    CC/eno_vols vol_ptr = CC/eno_vols(voices[i].vol_ptr)
+    if vol_ptr[voices[i].vol_index] > 0
+        play_tri()

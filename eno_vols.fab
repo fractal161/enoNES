@@ -1,10 +1,10 @@
+// octaves taken from https://www.nesdev.org/wiki/Celius_NTSC_table
 fn init_eno_voices()
 : employs /eno_vols
-    // test_ptr = @sq1_1_vol
-    // test_ptr_cast = UUU(@sq1_1_vol)
+    // sq1
     voices[0] = RepNote(
         U(1),
-        UU($010C),
+        UU($010C), // Ab3
         U(len(sq1_1_vol)),
         @sq1_1_vol,
         @sq1_1_len,
@@ -14,134 +14,127 @@ fn init_eno_voices()
 
     voices[1] = RepNote(
         U(1),
-        UU($010C),
-        U(len(sq1_1_vol)),
-        @sq1_1_vol,
-        @sq1_1_len,
+        UU($13F), // F3
+        U(len(sq1_2_vol)),
+        @sq1_2_vol,
+        @sq1_2_len,
         U(0),
         U(0)
     )
 
     voices[2] = RepNote(
         U(1),
-        UU($010C),
-        U(len(sq1_1_vol)),
-        @sq1_1_vol,
-        @sq1_1_len,
+        UU($0193), // Db3
+        U(len(sq1_3_vol)),
+        @sq1_3_vol,
+        @sq1_3_len,
         U(0),
         U(0)
     )
 
+    // sq2
     voices[3] = RepNote(
         U(1),
-        UU($010C),
-        U(len(sq1_1_vol)),
-        @sq1_1_vol,
-        @sq1_1_len,
+        UU($0167), // Eb3
+        U(len(sq2_1_vol)),
+        @sq2_1_vol,
+        @sq2_1_len,
         U(0),
         U(0)
     )
 
     voices[4] = RepNote(
         U(1),
-        UU($010C),
-        U(len(sq1_1_vol)),
-        @sq1_1_vol,
-        @sq1_1_len,
+        UU($01AB), // C3
+        U(len(sq2_2_vol)),
+        @sq2_2_vol,
+        @sq2_2_len,
         U(0),
         U(0)
     )
 
     voices[5] = RepNote(
         U(1),
-        UU($010C),
-        U(len(sq1_1_vol)),
-        @sq1_1_vol,
-        @sq1_1_len,
+        UU($021A), // Ab2
+        U(len(sq2_3_vol)),
+        @sq2_3_vol,
+        @sq2_3_len,
         U(0),
         U(0)
     )
 
+    // triangle
     voices[6] = RepNote(
         U(1),
-        UU($010C),
-        U(len(sq1_1_vol)),
-        @sq1_1_vol,
-        @sq1_1_len,
+        UU($13F), // F2
+        U(len(tri_vol)),
+        @tri_vol,
+        @tri_len,
         U(0),
         U(0)
     )
 
 omni data /eno_vols
-    [] sq1_1_vol
-        U(8)
-        U(9)
-        U(10)
-        U(11)
-        U(12)
-        U(13)
-        U(14)
-        U(15)
-        U(15)
-        U(14)
-        U(13)
-        U(12)
-        U(11)
-        U(10)
-        U(9)
-        U(8)
+    [] sq1_1_vol // Ab3
+        ("0023456789ABCDEFFEDCBA987654320")
     [] sq1_1_len
-        U(20)
-        U(20)
-        U(20)
-        U(20)
-        U(20)
-        U(20)
-        U(20)
-        U(20)
-        U(20)
-        U(20)
-        U(20)
-        U(20)
-        U(20)
-        U(20)
-        U(20)
-        U(20)
+        U(230)
+        U(236)
+        ("KKKKKKKKKKKKKKKKKKKKKKKKKKKK")
+        U(2)
 
-    [] sq1_2_vol
-        U(8)
-        U(9)
-        U(10)
-        U(11)
-        U(12)
-        U(13)
-        U(14)
-        U(15)
-        U(15)
-        U(14)
-        U(13)
-        U(12)
-        U(11)
-        U(10)
-        U(9)
-        U(8)
+    [] sq1_2_vol // F3
+        ("00123456789ABCDEFFEDCBA9876543210")
     [] sq1_2_len
-        U(20)
-        U(20)
-        U(20)
-        U(20)
-        U(20)
-        U(20)
-        U(20)
-        U(20)
-        U(20)
-        U(20)
-        U(20)
-        U(20)
-        U(20)
-        U(20)
-        U(20)
-        U(20)
+        U(200)
+        U(202)
+        ("KKKKKKKKKKKKKKKKKKKKKKKKKKKKKK")
+        U(133)
+
+    [] sq1_3_vol // Db3
+        ("000123456789ABCDEFFEDCBA98765432100")
+    [] sq1_3_len
+        U(250)
+        U(250)
+        U(168)
+        ("KKKKKKKKKKKKKKKKKKKKKKKKKKKKKK")
+        U(200)
+        U(150)
+
+    [] sq2_1_vol // Eb3
+        ("0123456789ABCDEFFEDCBA9876543210")
+    [] sq2_1_len
+        U(160)
+        ("KKKKKKKKKKKKKKKKKKKKKKKKKKKKKK")
+        U(171)
+
+    [] sq2_2_vol // C3
+        ("0123456789ABCDEFFEDCBA98765432100")
+    [] sq2_2_len
+        U(74)
+        ("KKKKKKKKKKKKKKKKKKKKKKKKKKKKKK")
+        U(200)
+        U(292)
+
+    [] sq2_3_vol // Ab2
+        ("00123456789ABCDEFFEDCBA9876543210")
+    [] sq2_3_len
+        U(256)
+        U(254)
+        ("KKKKKKKKKKKKKKKKKKKKKKKKKKKKKK")
+        U(128)
+
+    [] tri_vol // F2
+        ("0011100")
+    [] tri_len
+        U(200)
+        U(214)
+        U(200)
+        U(200)
+        U(240)
+        U(200)
+        U(228)
+
 // 
 //     [] sq1_3_vol
 //     [] sq1_3_len
