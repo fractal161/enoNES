@@ -44,7 +44,7 @@ data /backgrounds
          "································")
 
 fn draw_midi()
-: employs /eno_voices
+: employs /eno_voices/globals
     // if sq1 track is playing, set it
     UU addr = ppu_addr_from_scroll(current_sq1)
     if sq1_vol > 0
@@ -68,7 +68,7 @@ fn draw_midi()
         fence
 
     // remove everything offscreen
-    addr = $24A0
+    addr = $24C0
     UU col = (UU(scroll_x.a >> 3) + UU(scroll_x.b << 5) - 3) & 63
     if col > 31
         addr += $400
@@ -80,7 +80,7 @@ fn draw_midi()
     {PPUCTRL}(ppu_ctrl)
     fence
 
-    for U i = 0; i < 25; i += 1
+    for U i = 0; i < 24; i += 1
         {PPUDATA}($FF)
 
     ppu_ctrl ^= %100

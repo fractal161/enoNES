@@ -47,6 +47,19 @@ mode main()
 
 the `employs` is necessary to tell the compiler that the nmi code needs the globals. Putting it just with the nmi handler itself doesn't work
 
+there was something really weird in the commit before, but i think i forgot to note it down lmao
+
+for the code block below, replacing it with a series of for loops caused some really weird behavior
+```
+    for U i = 0; i < 64; i += 1
+        if i < 8
+            {PPUDATA}(%01010101)
+        else if i < 16
+            {PPUDATA}(%00000101)
+        else
+            {PPUDATA}(%00000000)
+```
+
  SUGGESTIONS (mostly for docs)
  - .a and .b appear to be undocumented
  - would be nice to explicitly say how PAAs should be inited

@@ -15,7 +15,12 @@ fn load_bg()
 
     // Then the attributes:
     for U i = 0; i < 64; i += 1
-        {PPUDATA}(%00000000)
+        if i < 8
+            {PPUDATA}(%01010101)
+        else if i < 16
+            {PPUDATA}(%00000101)
+        else
+            {PPUDATA}(%00000000)
 
     // then blank
     for UU i = 0; i < 960; i += 1
@@ -23,7 +28,20 @@ fn load_bg()
 
     // Then the attributes again:
     for U i = 0; i < 64; i += 1
-        {PPUDATA}(%00000000)
+        if i < 8
+            {PPUDATA}(%01010101)
+        else if i < 16
+            {PPUDATA}(%00000101)
+        else
+            {PPUDATA}(%00000000)
+
+    // straight line for sprite 0 hit
+    ppu_reset_addr($20A0)
+    for U i = 0; i < 32; i += 1
+        {PPUDATA}($FC)
+    ppu_reset_addr($24A0)
+    for U i = 0; i < 32; i += 1
+        {PPUDATA}($FC)
 
 fn handle_input()
 
@@ -32,7 +50,7 @@ nmi main_nmi()
     // draw_title()
     scroll_x -= 2
     scroll_x &= $1FF
-    ppu_ctrl = PPUCTRL_NMI_ON | scroll_x.b
+    ppu_ctrl = PPUCTRL_NMI_ON
     fence
     {PPUCTRL}(ppu_ctrl)
     fence
@@ -42,14 +60,25 @@ nmi main_nmi()
     if global_counter == 8
         global_counter = 0
 
-    ppu_reset_scroll(scroll_x.a, 0)
+    ppu_reset_scroll(0, 0)
 
 mode main()
 : nmi main_nmi
 : employs /sound/buffer/globals
     palette = example_palette
+    palette[3] = $20
+    palette[4] = $0F
+    palette[5] = $0F
+    palette[12] = $0F
+    palette[13] = $0F
+    palette[14] = $0F
     ppu_upload_palette()
+    // set up sprite 0 timing
     hide_oam(0)
+    set_oam_x(0, $FE)
+    set_oam_y(0, 39)
+    set_oam_p(0, $FE)
+    set_oam_a(0, 0)
 
     init_eno_voices()
     load_bg()
@@ -62,9 +91,26 @@ mode main()
     {SQ2_SWEEP}(0) // disable sweep
     fence
     while true
+        fence
+        U ppu_status = {PPUSTATUS}()
+        fence
+        while ppu_status & $40 > 0
+            fence
+            ppu_status = {PPUSTATUS}()
+            fence
         update_pads()
         handle_input()
         update_eno()
+        // wait for sprite 0 hit
+        while ppu_status & $40 == 0
+            fence
+            ppu_status = {PPUSTATUS}()
+            fence
+        ppu_ctrl = PPUCTRL_NMI_ON | scroll_x.b
+        fence
+        {PPUCTRL}(ppu_ctrl)
+        fence
+        ppu_reset_scroll(scroll_x.a, 0)
         nmi
 
 // Define the tileset (commonly called CHR):
