@@ -6,34 +6,16 @@ struct RepNote
     CC/eno_vols vol_len_ptr
     U vol_index
     U vol_counter
-
-omni data /voice_orders
-    [] voice_order
-        U(1)
-        U(3)
-        U(2)
-        U(1)
-        U(2)
-        U(3)
-        U(2)
-        U(1)
-        U(3)
-        U(2)
-        U(3)
-        U(1)
-        U(3)
-        U(2)
-        U(1)
-        U(3)
-        U(1)
-        U(2)
+    U is_active
 
 vars /eno_voices
     RepNote[7] voices
+    U current_sq1 = 0
+    U current_sq2 = 0
 
 
 fn update_eno()
-: employs /eno_voices/eno_vols/globals
+: employs /eno_voices/eno_vols/globals/buffer
     // increment all counters
     for U i = 0; i < len(voices); i += 1
         CC/eno_vols vol_ptr = CC/eno_vols(voices[i].vol_ptr)
@@ -46,49 +28,80 @@ fn update_eno()
             // check if we loop the envelope
             if voices[i].vol_index == voices[i].vol_size
                 voices[i].vol_index = 0
-    // TODO: use global counter to get order to update each thing
-    update_sq1(0)
-    update_sq2(2)
+        // if it becomes active, add to ring_buffer
+        U new_active = U(vol_ptr[voices[i].vol_index] > 0)
+        if i > 0 && new_active == U(1) && voices[i].is_active == U(0)
+            push_buffer(i)
+        voices[i].is_active = new_active
 
-    // triangle is nice and simple
-    update_tri(6)
+    if global_counter & 7 == 0
+        assign_sq1_voice()
+
+    if global_counter & 7 == 4
+        assign_sq2_voice()
+
+
+    update_sq1(current_sq1)
+    update_sq2(current_sq2)
+
+    // triangle is nice and simple?????
+    update_tri(0)
+
+fn assign_sq1_voice()
+    // have sq1 attempt to claim a track from the ring buffer
+    if current_sq1 > 0 && voices[current_sq1].is_active
+        push_buffer(current_sq1)
+    U new_sq1 = pop_buffer()
+    if new_sq1 > 0 && current_sq1 != new_sq1
+        // set pitch
+        sq1_pitch = voices[new_sq1].pitch
+        set_sq1_pitch()
+        current_sq1 = new_sq1
+
+fn assign_sq2_voice()
+    // have sq2 attempt to claim a track from the ring buffer
+    if current_sq2 > 0 && voices[current_sq2].is_active
+        push_buffer(current_sq2)
+    U new_sq2 = pop_buffer()
+    if new_sq2 > 0 && current_sq2 != new_sq2
+        // set pitch
+        sq2_pitch = voices[new_sq2].pitch
+        set_sq2_pitch()
+        current_sq2 = new_sq2
 
 fn update_sq1(U i)
-: employs /eno_voices/sound
+: employs /eno_voices/eno_vols/sound
     CC/eno_vols vol_ptr = CC/eno_vols(voices[i].vol_ptr)
-
-    // check if duration has been fulfilled
     sq1_duty = voices[i].duty
     U vol = vol_ptr[voices[i].vol_index]
-    if vol > 0
-        if sq1_vol == 0
-            sq1_pitch = voices[i].pitch
-            set_sq1_pitch()
+    // if vol > 0
+    //     if sq1_vol == 0
+    //         sq1_pitch = voices[i].pitch
+    //         set_sq1_pitch()
     sq1_vol = vol
     set_sq1_timbre()
 
 fn update_sq2(U i)
-: employs /eno_voices/sound
+: employs /eno_voices/eno_vols/sound
     CC/eno_vols vol_ptr = CC/eno_vols(voices[i].vol_ptr)
-
-    // check if duration has been fulfilled
     sq2_duty = voices[i].duty
     U vol = vol_ptr[voices[i].vol_index]
-    if vol > 0
-        if sq2_vol == 0
-            sq2_pitch = voices[i].pitch
-            set_sq2_pitch()
+    // if vol > 0
+    //     if sq2_vol == 0
+    //         sq2_pitch = voices[i].pitch
+    //         set_sq2_pitch()
     sq2_vol = vol
     set_sq2_timbre()
 
 fn update_tri(U i)
+: employs /eno_voices/eno_vols/sound
     // attempt to use DMC volume control
-    CC/eno_vols vol_ptr = CC/eno_vols(voices[i].vol_ptr)
-    U vol = vol_ptr[voices[i].vol_index]
-    U dmc_vol = 127 - vol << 3
+    CC/eno_vols vol_ptr = CC/eno_vols(voices[0].vol_ptr)
+    U vol = vol_ptr[voices[0].vol_index]
+    U dmc_vol = 127 - (vol << 3)
     fence
     {DMC_RAW}(dmc_vol)
     fence
-    tri_pitch = voices[i].pitch
-    if vol_ptr[voices[i].vol_index] > 0
+    tri_pitch = voices[0].pitch
+    if vol_ptr[voices[0].vol_index] > 0
         play_tri()

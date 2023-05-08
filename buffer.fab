@@ -1,0 +1,20 @@
+vars /buffer
+    [8] voice_ring_buffer  // we only need 6, but this makes indexing nice
+    // we naively increment these, then & 7 when we want the actual indices
+    // this makes both incrementing and comparing a ton nicer
+    U buffer_start = 0
+    U buffer_end = 0 // should never become equal to buffer_start
+
+fn push_buffer(U x)
+: employs /buffer
+    @voice_ring_buffer[buffer_end & 7] = x
+    buffer_end += 1
+
+fn pop_buffer() U
+: employs /buffer
+    if buffer_start == buffer_end
+        return U(0)
+    else
+        U x = @voice_ring_buffer[buffer_start & 7]
+        buffer_start += 1
+        return x
