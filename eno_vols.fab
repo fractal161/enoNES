@@ -13,13 +13,12 @@ fn init_eno_voices()
         U(0)
     )
 
-    // sq1
     voices[1] = RepNote(
         U(1),
-        UU($010C), // Ab3
-        U(len(sq1_1_vol)),
-        @sq1_1_vol,
-        @sq1_1_len,
+        UU($021A), // Ab2
+        U(len(sq2_3_vol)),
+        @sq2_3_vol,
+        @sq2_3_len,
         U(0),
         U(0),
         U(0)
@@ -27,10 +26,10 @@ fn init_eno_voices()
 
     voices[2] = RepNote(
         U(1),
-        UU($13F), // F3
-        U(len(sq1_2_vol)),
-        @sq1_2_vol,
-        @sq1_2_len,
+        UU($01AB), // C3
+        U(len(sq2_2_vol)),
+        @sq2_2_vol,
+        @sq2_2_len,
         U(0),
         U(0),
         U(0)
@@ -47,7 +46,6 @@ fn init_eno_voices()
         U(0)
     )
 
-    // sq2
     voices[4] = RepNote(
         U(1),
         UU($0167), // Eb3
@@ -61,10 +59,10 @@ fn init_eno_voices()
 
     voices[5] = RepNote(
         U(1),
-        UU($01AB), // C3
-        U(len(sq2_2_vol)),
-        @sq2_2_vol,
-        @sq2_2_len,
+        UU($13F), // F3
+        U(len(sq1_2_vol)),
+        @sq1_2_vol,
+        @sq1_2_len,
         U(0),
         U(0),
         U(0)
@@ -72,14 +70,15 @@ fn init_eno_voices()
 
     voices[6] = RepNote(
         U(1),
-        UU($021A), // Ab2
-        U(len(sq2_3_vol)),
-        @sq2_3_vol,
-        @sq2_3_len,
+        UU($010C), // Ab3
+        U(len(sq1_1_vol)),
+        @sq1_1_vol,
+        @sq1_1_len,
         U(0),
         U(0),
         U(0)
     )
+
 
 omni data /eno_vols
     [] sq1_1_vol // Ab3

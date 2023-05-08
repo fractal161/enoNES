@@ -1,23 +1,28 @@
-charmap("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ#@-,'>!♥·")
+charmap("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ-,`>/()\".:·")
 
-data /titles
-    [] titles
-        ("···············2,1··············"
-         "·············MARKOV·············")
+data /midi
+    [] midi_heights
+        U(0)
+        U(3)
+        U(5)
+        U(7)
+        U(8)
+        U(12)
+        U(15)
 
 data /backgrounds
     [] bg
         ("································"
          "································"
-         "···········NOW·PLAYING··········"
+         "·····2/1:·MUSIC·FOR·AIRPORTS····"
+         "································"
+         "···········BRIAN·ENO············"
          "································"
          "································"
          "································"
-         "·····#####····#####·····@·······"
-         "·····#####····#####····@@@······"
-         "·····#####····#####····@@@······"
-         "·····#####····#####···@@@@@·····"
-         "·····#####····#####···@@@@@·····"
+         "································"
+         "································"
+         "································"
          "································"
          "································"
          "································"
@@ -38,3 +43,58 @@ data /backgrounds
          "································"
          "································")
 
+fn draw_midi()
+: employs /eno_voices
+    // if sq1 track is playing, set it
+    UU addr = ppu_addr_from_scroll(current_sq1)
+    if sq1_vol > 0
+        ppu_reset_addr(AA(addr))
+        fence
+        {PPUDATA}($FC)
+        fence
+    // if sq2 track is playing, set it
+    addr = ppu_addr_from_scroll(current_sq2)
+    if sq2_vol > 0
+        ppu_reset_addr(AA(addr))
+        fence
+        {PPUDATA}($FD)
+        fence
+    // check for triangle specifically
+    addr = ppu_addr_from_scroll(0)
+    if voices[0].is_active > 0
+        ppu_reset_addr(AA(addr))
+        fence
+        {PPUDATA}($FE)
+        fence
+
+    // remove everything offscreen
+    addr = $24A0
+    UU col = (UU(scroll_x.a >> 3) + UU(scroll_x.b << 5) - 3) & 63
+    if col > 31
+        addr += $400
+    addr += col & 31
+    ppu_reset_addr(AA(addr))
+
+    ppu_ctrl ^= %100
+    fence
+    {PPUCTRL}(ppu_ctrl)
+    fence
+
+    for U i = 0; i < 25; i += 1
+        {PPUDATA}($FF)
+
+    ppu_ctrl ^= %100
+    fence
+    {PPUCTRL}(ppu_ctrl)
+    fence
+
+fn ppu_addr_from_scroll(U row) UU
+    // UU addr = $2300 - UU($20 * @midi_heights[row]) + UU(scroll_x.a >> 3)
+    // if scroll_x.b == 1
+    //     // $2000 + something
+    //     addr += $400
+    UU addr = $2300 - UU($20 * @midi_heights[row])
+    UU col = (UU(scroll_x.a >> 3) + UU(scroll_x.b << 5) + 2) & 63
+    if col > 31
+        addr += $400
+    return addr + (col & 31)

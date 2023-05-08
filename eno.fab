@@ -34,10 +34,10 @@ fn update_eno()
             push_buffer(i)
         voices[i].is_active = new_active
 
-    if global_counter & 7 == 0
+    if global_counter == 0
         assign_sq1_voice()
 
-    if global_counter & 7 == 4
+    if global_counter == 4
         assign_sq2_voice()
 
 
